@@ -11,4 +11,6 @@ if [ -n "$OTHER_DNS0" ]; then
 	fi
 fi
 
+# dnsmasq will close till _SC_OPEN_MAX
+ulimit -n 1024
 exec dnsmasq "$@"
