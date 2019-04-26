@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ -n "$CHINA_DNS0" ]; then
+	sed -i -e "s|^\(server.*\)/[^/]*$|\1/$CHINA_DNS0|" /etc/dnsmasq.d/china.conf
+fi
+
+if [ -n "$OTHER_DNS0" ]; then
+	echo "server=$OTHER_DNS0"  >/etc/dnsmasq.d/others.conf
+	if [ -n "$OTHER_DNS1" ]; then
+		echo "server=$OTHER_DNS1" >>/etc/dnsmasq.d/others.conf
+	fi
+fi
+
+exec dnsmasq "$@"
