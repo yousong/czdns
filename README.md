@@ -16,7 +16,9 @@ See dnsmasq [FAQ](http://thekelleys.org.uk/dnsmasq/docs/FAQ) for info on capabil
 
 | Name  | Default | Note |
 | ------- | ------ | ---- |
-| `CHINA_DNS0`  | `223.5.5.5`  |  Name server for resolving dns names from China  |
+| `USE_LIST`  | `chn`  |  Select nameservers based on whether dns names are<br>  - `chn`, from China<br>  - `gfw`, parts of gfwlist.txt<br> |
+| `CHINA_DNS0`  | `223.5.5.5`     |  Name server for resolving dns names from China  |
+| `CHINA_DNS1`  | `119.29.29.29`  |  Same as `CHINA_DNS0`, but for backup  |
 | `OTHER_DNS0`  | `8.8.8.8`  |  Name server for resolving dns names from other region  |
 | `OTHER_DNS1`  | `8.8.4.4`  |  Same as `OTHER_DNS0`, but for backup |
 

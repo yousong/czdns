@@ -1,15 +1,38 @@
 #!/bin/sh
 
-if [ -n "$CHINA_DNS0" ]; then
-	sed -i -e "s|^\(server.*\)/[^/]*$|\1/$CHINA_DNS0|" /etc/dnsmasq.d/china.conf
-fi
+case "$USE_LIST" in
+	chn)
+		cp /etc/czdns/china.conf /etc/dnsmasq.d/
+		if [ -n "$CHINA_DNS0" ]; then
+			sed -i -e "s|^\(server.*\)/[^/]*$|\1/$CHINA_DNS0|" /etc/dnsmasq.d/china.conf
+		fi
 
-if [ -n "$OTHER_DNS0" ]; then
-	echo "server=$OTHER_DNS0"  >/etc/dnsmasq.d/others.conf
-	if [ -n "$OTHER_DNS1" ]; then
-		echo "server=$OTHER_DNS1" >>/etc/dnsmasq.d/others.conf
-	fi
-fi
+		if [ -n "$OTHER_DNS0" ]; then
+			echo "server=$OTHER_DNS0" >/etc/dnsmasq.d/others.conf
+			if [ -n "$OTHER_DNS1" ]; then
+				echo "server=$OTHER_DNS1" >>/etc/dnsmasq.d/others.conf
+			fi
+		fi
+		;;
+	gfw)
+		cp /etc/czdns/gfwlist.conf /etc/dnsmasq.d/
+		if [ -n "$CHINA_DNS0" ]; then
+			sed -i -e "s|^\(server.*\)/not_in_gfw$|\1/$CHINA_DNS0|" /etc/dnsmasq.d/gfwlist.conf
+			echo "server=$CHINA_DNS0" >/etc/dnsmasq.d/others.conf
+			if [ -n "$CHINA_DNS1" ]; then
+				echo "server=$CHINA_DNS1" >>/etc/dnsmasq.d/others.conf
+			fi
+		fi
+
+		if [ -n "$OTHER_DNS0" ]; then
+			sed -i -e "s|^\(server.*\)/in_gfw$|\1/$OTHER_DNS0|" /etc/dnsmasq.d/gfwlist.conf
+		fi
+		;;
+	*)
+		echo "unknown USE_LIST value: $USE_LIST, expecting chn, gfw" >&2
+		exit 1
+		;;
+esac
 
 # dnsmasq will close till _SC_OPEN_MAX
 ulimit -n 1024

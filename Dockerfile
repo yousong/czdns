@@ -5,14 +5,14 @@ RUN apk add dnsmasq
 
 #RUN apk add bind-tools strace tcpdump
 
-RUN wget -O /etc/dnsmasq.d/china.conf \
-	https://github.com/felixonmars/dnsmasq-china-list/raw/master/accelerated-domains.china.conf
-ADD files/entrypoint /
+ADD files/ /
 
 EXPOSE 53/udp
 EXPOSE 53/tcp
 
+ENV USE_LIST=chn
 ENV CHINA_DNS0=223.5.5.5
+ENV CHINA_DNS1=119.29.29.29
 ENV OTHER_DNS0=8.8.8.8
 ENV OTHER_DNS1=8.8.4.4
 
