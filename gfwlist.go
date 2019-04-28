@@ -43,9 +43,6 @@ func (r *ABPRule) validate() error {
 		if strings.HasPrefix(s, ".") {
 			return fmt.Errorf("starts with dot")
 		}
-		if strings.HasSuffix(s, ".") {
-			return fmt.Errorf("ends with dot")
-		}
 		for _, r := range chars_not {
 			if strings.ContainsRune(s, r) {
 				return fmt.Errorf("contains %q", r)
@@ -151,11 +148,6 @@ func parseLine(line string) (*ABPRule, error) {
 		return nil, nil
 	}
 
-	// plain name
-	if !strings.ContainsRune(line, '.') {
-		return nil, nil
-	}
-
 	url, _ := url.Parse(line)
 	if url != nil {
 		host := url.Hostname()
@@ -164,7 +156,7 @@ func parseLine(line string) (*ABPRule, error) {
 				host = host[i+1:]
 				host = strings.TrimLeft(host, ".")
 			}
-			if host == "" {
+			if !strings.ContainsRune(line, '.') {
 				return nil, nil
 			}
 			rule := &ABPRule{
@@ -181,6 +173,9 @@ func parseLine(line string) (*ABPRule, error) {
 		return nil, nil
 	}
 	line = strings.TrimLeft(line, ".") // .example.com
+	if !strings.ContainsRune(line, '.') {
+		return nil, nil
+	}
 	rule := &ABPRule{
 		host: line,
 	}
