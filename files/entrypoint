@@ -3,11 +3,9 @@
 case "$USE_LIST" in
 	chn)
 		if [ -n "$CHINA_DNS0" ]; then
-			cp /etc/czdns/china.conf /etc/dnsmasq.d/china0.conf
-			sed -i -e "s|^\(server.*\)/[^/]*$|\1/$CHINA_DNS0|" /etc/dnsmasq.d/china0.conf
+			sed -e "s|^\(server.*\)/[^/]*$|\1/$CHINA_DNS0|" /etc/czdns/china.conf >/etc/dnsmasq.d/china0.conf
 			if [ -n "$CHINA_DNS1" ]; then
-				cp /etc/czdns/china.conf /etc/dnsmasq.d/china1.conf
-				sed -i -e "s|^\(server.*\)/[^/]*$|\1/$CHINA_DNS1|" /etc/dnsmasq.d/china1.conf
+				sed -e "s|^\(server.*\)/[^/]*$|\1/$CHINA_DNS1|" /etc/czdns/china.conf >/etc/dnsmasq.d/china1.conf
 			fi
 		fi
 
@@ -21,22 +19,16 @@ case "$USE_LIST" in
 	gfw)
 		if [ -n "$CHINA_DNS0" ]; then
 			echo "server=$CHINA_DNS0" >/etc/dnsmasq.d/others.conf
+			sed -n -e "s|^\(server.*\)/not_in_gfw$|\1/$CHINA_DNS0|p" /etc/czdns/gfwlist.conf >/etc/dnsmasq.d/gfwlist.not.0.conf
 			if [ -n "$CHINA_DNS1" ]; then
 				echo "server=$CHINA_DNS1" >>/etc/dnsmasq.d/others.conf
+				sed -n -e "s|^\(server.*\)/not_in_gfw$|\1/$CHINA_DNS1|p" /etc/czdns/gfwlist.conf >/etc/dnsmasq.d/gfwlist.not.1.conf
 			fi
 		fi
 		if [ -n "$OTHER_DNS0" ]; then
-			cp /etc/czdns/gfwlist.conf /etc/dnsmasq.d/gfwlist0.conf
-			if [ -n "$CHINA_DNS0" ]; then
-				sed -i -e "s|^\(server.*\)/not_in_gfw$|\1/$CHINA_DNS0|" /etc/dnsmasq.d/gfwlist0.conf
-			fi
-			sed -i -e "s|^\(server.*\)/in_gfw$|\1/$OTHER_DNS0|" /etc/dnsmasq.d/gfwlist0.conf
+			sed -n -e "s|^\(server.*\)/in_gfw$|\1/$OTHER_DNS0|p" /etc/czdns/gfwlist.conf >/etc/dnsmasq.d/gfwlist0.conf
 			if [ -n "$OTHER_DNS1" ]; then
-				cp /etc/czdns/gfwlist.conf /etc/dnsmasq.d/gfwlist1.conf
-				if [ -n "$CHINA_DNS1" ]; then
-					sed -i -e "s|^\(server.*\)/not_in_gfw$|\1/$CHINA_DNS1|" /etc/dnsmasq.d/gfwlist1.conf
-				fi
-				sed -i -e "s|^\(server.*\)/in_gfw$|\1/$OTHER_DNS1|" /etc/dnsmasq.d/gfwlist1.conf
+				sed -n -e "s|^\(server.*\)/in_gfw$|\1/$OTHER_DNS1|p" /etc/czdns/gfwlist.conf >/etc/dnsmasq.d/gfwlist1.conf
 			fi
 		fi
 		;;
