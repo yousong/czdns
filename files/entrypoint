@@ -38,6 +38,10 @@ case "$USE_LIST" in
 		;;
 esac
 
+if [ -n "$DNSMASQ_EXTRA_CONF" ]; then
+	echo "$DNSMASQ_EXTRA_CONF" >/etc/dnsmasq.d/99-extra.conf
+fi
+
 # dnsmasq will close till _SC_OPEN_MAX
 ulimit -n 1024
 exec dnsmasq "$@"

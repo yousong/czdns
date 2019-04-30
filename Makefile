@@ -27,7 +27,7 @@ run: build
 	docker run \
 		--name czdns \
 		--rm \
-		--env USE_LIST=$(USE_LIST) \
+		--env USE_LIST="$(USE_LIST)" \
 		--cap-add NET_ADMIN \
 		-p 2053:53/udp \
 		-p 2053:53/tcp \
