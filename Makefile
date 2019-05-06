@@ -28,6 +28,9 @@ run: build
 		--name czdns \
 		--rm \
 		--env USE_LIST="$(USE_LIST)" \
+		--env DNSMASQ_EXTRA_CONF="$(DNSMASQ_EXTRA_CONF)" \
+		--env CHINA_NAMES="$(CHINA_NAMES)" \
+		--env OTHER_NAMES="$(OTHER_NAMES)" \
 		--cap-add NET_ADMIN \
 		-p 2053:53/udp \
 		-p 2053:53/tcp \
