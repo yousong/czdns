@@ -46,6 +46,15 @@ clean:
 	rm -rvf $(CZDNS_DIR)
 	rm -vf gfwlist
 
+release:
+	echo "$(VERSION)" | grep -qE "^v[0-9]+\.[0-9]+\.[0-9]+$$"
+	git tag --force "$(VERSION)" HEAD
+	git push origin HEAD --tags
+	docker tag yousong/czdns:latest "yousong/czdns:$(VERSION)"
+	docker push yousong/czdns:latest
+	docker push "yousong/czdns:$(VERSION)"
+
 .PHONY: build
 .PHONY: run
+.PHONY: release
 .PHONY: clean
