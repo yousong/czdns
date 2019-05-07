@@ -28,6 +28,11 @@ Example value for `DNSMASQ_EXTRA_CONF`
 	cache-size=40960
 	dns-forward-max=4096
 
+Example settings for `CHINA_NAMES`, `OTHER_NAMES`
+
+	CHINA_NAMES='github.com centos.org'
+	OTHER_NAMES='gist.github.com'
+
 # Links
 
 - czdns docker hub page, https://hub.docker.com/r/yousong/czdns/tags
