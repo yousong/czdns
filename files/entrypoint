@@ -45,8 +45,8 @@ case "$USE_LIST" in
 		for nameserver in $OTHER_DNS; do
 			echo "server=$nameserver" >>/etc/dnsmasq.d/other.conf
 		done
-		make_names_conf "/etc/czdns/other_names.conf" "$OTHER_DNS" /etc/dnsmasq.d/other_names.conf /etc/dnsmasq.d/china.conf /etc/dnsmasq.d/other.conf
-		make_names_conf "/etc/czdns/china_names.conf" "$CHINA_DNS" /etc/dnsmasq.d/china_names.conf /etc/dnsmasq.d/china.conf /etc/dnsmasq.d/other.conf
+		make_names_conf "/etc/czdns/other_names.conf" "$OTHER_DNS" /etc/dnsmasq.d/other_names.conf /etc/dnsmasq.d/china.conf
+		make_names_conf "/etc/czdns/china_names.conf" "$CHINA_DNS" /etc/dnsmasq.d/china_names.conf /etc/dnsmasq.d/china.conf
 		;;
 	gfw)
 		for nameserver in $CHINA_DNS; do
