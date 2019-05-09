@@ -56,6 +56,7 @@ release:
 
 ifneq ($(VERSION),)
 .PHONY: $(CHNLIST) $(GFWLIST)
+release: build
 endif
 
 .PHONY: build
