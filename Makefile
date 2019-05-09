@@ -54,6 +54,10 @@ release:
 	docker push yousong/czdns:latest
 	docker push "yousong/czdns:$(VERSION)"
 
+ifneq ($(VERSION),)
+.PHONY: $(CHNLIST) $(GFWLIST)
+endif
+
 .PHONY: build
 .PHONY: run
 .PHONY: release
