@@ -63,3 +63,19 @@ endif
 .PHONY: run
 .PHONY: release
 .PHONY: clean
+
+define TagsPyPrint
+import json, sys
+rs = json.load(sys.stdin)
+rs = rs["results"]
+rs = "\n".join("{name} {full_size} {images[0][os]} {images[0][architecture]} {last_updated}".format(**r) for r in rs)
+print("Name Bytes OS Arch Updated")
+print(rs)
+endef
+export TagsPyPrint:=$(TagsPyPrint)
+
+tags:
+	@curl -s -L https://registry.hub.docker.com/v2/repositories/yousong/czdns/tags \
+		| python -c "$$TagsPyPrint" \
+		| column -t
+.PHONY: tags
