@@ -51,8 +51,8 @@ release:
 	git tag --force "$(VERSION)" HEAD
 	git push origin HEAD --tags
 	docker tag yousong/czdns:latest "yousong/czdns:$(VERSION)"
-	docker push yousong/czdns:latest
 	docker push "yousong/czdns:$(VERSION)"
+	docker push yousong/czdns:latest
 
 ifneq ($(VERSION),)
 .PHONY: $(CHNLIST) $(GFWLIST)
