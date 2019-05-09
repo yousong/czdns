@@ -7,7 +7,6 @@
 		--restart always \
 		--cap-add NET_ADMIN \
 		-p 2053:53/udp \
-		-p 2053:53/tcp \
 		yousong/czdns
 
 See dnsmasq [FAQ](http://thekelleys.org.uk/dnsmasq/docs/FAQ) for info on capability requirement.
@@ -18,7 +17,7 @@ See dnsmasq [FAQ](http://thekelleys.org.uk/dnsmasq/docs/FAQ) for info on capabil
 | ----                 | -------                        | ----                                                                                                              |
 | `USE_LIST`           | `chn`                          | Select nameservers based on whether dns names are<br>  - `chn`, from China<br>  - `gfw`, parts of gfwlist.txt<br> |
 | `CHINA_DNS`          | `114.114.114.114 119.29.29.29` | Name servers for resolving dns names from China                                                                   |
-| `OTHER_DNS`          | `8.8.8.8 1.1.1.1`              | Name server for resolving dns names from other region                                                             |
+| `OTHER_DNS`          | `8.8.8.8 1.1.1.1`              | Name servers for resolving dns names from other region                                                             |
 | `CHINA_NAMES`        |                                | Names separated by whitespace chars.  Overrides `USE_LIST` setting and resolve these names with `CHINA_DNS`       |
 | `OTHER_NAMES`        |                                | Names separated by whitespace chars.  Overrides `USE_LIST` setting and resolve these names with `OTHER_DNS`       |
 | `DNSMASQ_EXTRA_CONF` |                                | Extra conf to be included by dnsmasq                                                                              |
