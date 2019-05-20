@@ -72,8 +72,8 @@ rs = "\n".join("{name} {full_size} {images[0][os]} {images[0][architecture]} {la
 print("Name Bytes OS Arch Updated")
 print(rs)
 endef
-export TagsPyPrint:=$(TagsPyPrint)
 
+tags: export TagsPyPrint:=$(TagsPyPrint)
 tags:
 	@curl -s -L https://registry.hub.docker.com/v2/repositories/yousong/czdns/tags \
 		| python -c "$$TagsPyPrint" \
