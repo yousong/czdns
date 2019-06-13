@@ -1,5 +1,7 @@
 # Usage
 
+[![Join the chat at https://gitter.im/czdns/community](https://badges.gitter.im/czdns/community.svg)](https://gitter.im/czdns/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 	docker rm --force czdns
 	docker run \
 		--name czdns \
