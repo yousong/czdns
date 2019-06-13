@@ -43,10 +43,8 @@ func (r *ABPRule) validate() error {
 		if strings.HasPrefix(s, ".") {
 			return fmt.Errorf("starts with dot")
 		}
-		for _, r := range chars_not {
-			if strings.ContainsRune(s, r) {
-				return fmt.Errorf("contains %q", r)
-			}
+		if strings.ContainsAny(s, chars_not) {
+			return fmt.Errorf("contains %q", chars_not)
 		}
 		return nil
 	}
