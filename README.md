@@ -1,6 +1,8 @@
-# Usage
-
 [![Join the chat at https://gitter.im/czdns/community](https://badges.gitter.im/czdns/community.svg)](https://gitter.im/czdns/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Docker Pulls](https://img.shields.io/docker/pulls/yousong/czdns.svg)](https://hub.docker.com/r/yousong/czdns)
+[![Docker Stars](https://img.shields.io/docker/stars/yousong/czdns.svg)](https://hub.docker.com/r/yousong/czdns)
+
+# Usage
 
 	docker rm --force czdns
 	docker run \
