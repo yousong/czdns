@@ -65,6 +65,12 @@ case "$USE_LIST" in
 		;;
 esac
 
+ipset create nameservers hash:ip
+for nameserver in $CHINA_DNS $OTHER_DNS; do
+	ipset add nameservers "$nameserver"
+done
+iptables -t filter -A OUTPUT -p icmp --icmp-type port-unreachable -m set --match-set nameservers dst -j DROP
+
 if [ -n "$DNSMASQ_EXTRA_CONF" ]; then
 	echo "$DNSMASQ_EXTRA_CONF" >/etc/dnsmasq.d/99-extra.conf
 fi
