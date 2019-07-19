@@ -31,6 +31,7 @@ Example value for `DNSMASQ_EXTRA_CONF`
 	cache-size=40960
 	dns-forward-max=4096
 	add-subnet=24
+	address=/ads.com/#
 
 Example settings for `CHINA_NAMES`, `OTHER_NAMES`
 
