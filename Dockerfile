@@ -3,7 +3,6 @@ MAINTAINER Yousong Zhou <yszhou4tech@gmail.com>
 
 RUN apk add \
 	dnsmasq \
-	ipset \
 	iptables
 
 #RUN apk add bind-tools strace tcpdump
