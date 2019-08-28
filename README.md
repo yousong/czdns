@@ -4,6 +4,10 @@
 
 # Usage
 
+The image is available for multiple architectures, including, amd64, i386, arm64, armv7, armv6.
+
+Just run
+
 	docker rm --force czdns
 	docker run \
 		--name czdns \
