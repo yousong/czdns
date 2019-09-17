@@ -29,50 +29,57 @@ make_names_conf() {
 	done
 }
 
-if [ -n "$CHINA_NAMES" ]; then
-	echo "$CHINA_NAMES" | sed -r -e 's|\s+|\n|g' | sed -e '/^$/d' -e 's|.*|server=/\0/|' >/etc/czdns/china_names.conf
-fi
+make_conf() {
+	if [ -f /etc/dnsmasq.d/china.conf -o -f /etc/dnsmasq.d/gfwlist.conf ]; then
+		return
+	fi
 
-if [ -n "$OTHER_NAMES" ]; then
-	echo "$OTHER_NAMES" | sed -r -e 's|\s+|\n|g' | sed -e '/^$/d' -e 's|.*|server=/\0/|' >/etc/czdns/other_names.conf
-fi
+	if [ -n "$CHINA_NAMES" ]; then
+		echo "$CHINA_NAMES" | sed -r -e 's|\s+|\n|g' | sed -e '/^$/d' -e 's|.*|server=/\0/|' >/etc/czdns/china_names.conf
+	fi
 
-case "$USE_LIST" in
-	chn)
-		for nameserver in $CHINA_DNS; do
-			sed -e "s|^\(server.*\)/[^/]*$|\1/$nameserver|" /etc/czdns/china.conf >>/etc/dnsmasq.d/china.conf
-		done
-		for nameserver in $OTHER_DNS; do
-			echo "server=$nameserver" >>/etc/dnsmasq.d/other.conf
-		done
-		make_names_conf "/etc/czdns/other_names.conf" "$OTHER_DNS" /etc/dnsmasq.d/other_names.conf /etc/dnsmasq.d/china.conf
-		make_names_conf "/etc/czdns/china_names.conf" "$CHINA_DNS" /etc/dnsmasq.d/china_names.conf /etc/dnsmasq.d/china.conf
-		;;
-	gfw)
-		for nameserver in $CHINA_DNS; do
-			echo "server=$nameserver" >>/etc/dnsmasq.d/other.conf
-			sed -n -e "s|^\(server.*\)/not_in_gfw$|\1/$nameserver|p" /etc/czdns/gfwlist.conf >>/etc/dnsmasq.d/gfwlist.not.conf
-		done
-		for nameserver in $OTHER_DNS; do
-			sed -n -e "s|^\(server.*\)/in_gfw$|\1/$nameserver|p" /etc/czdns/gfwlist.conf >>/etc/dnsmasq.d/gfwlist.conf
-		done
-		make_names_conf "/etc/czdns/china_names.conf" "$CHINA_DNS" /etc/dnsmasq.d/china_names.conf /etc/dnsmasq.d/gfwlist.conf /etc/dnsmasq.d/gfwlist.not.conf
-		make_names_conf "/etc/czdns/other_names.conf" "$OTHER_DNS" /etc/dnsmasq.d/other_names.conf /etc/dnsmasq.d/gfwlist.conf /etc/dnsmasq.d/gfwlist.not.conf
-		;;
-	*)
-		echo "unknown USE_LIST value: $USE_LIST, expecting chn, gfw" >&2
-		exit 1
-		;;
-esac
+	if [ -n "$OTHER_NAMES" ]; then
+		echo "$OTHER_NAMES" | sed -r -e 's|\s+|\n|g' | sed -e '/^$/d' -e 's|.*|server=/\0/|' >/etc/czdns/other_names.conf
+	fi
 
-for nameserver in $CHINA_DNS $OTHER_DNS; do
-	iptables -t filter -A OUTPUT -d $nameserver -p icmp --icmp-type port-unreachable -j DROP
-done
+	case "$USE_LIST" in
+		chn)
+			for nameserver in $CHINA_DNS; do
+				sed -e "s|^\(server.*\)/[^/]*$|\1/$nameserver|" /etc/czdns/china.conf >>/etc/dnsmasq.d/china.conf
+			done
+			for nameserver in $OTHER_DNS; do
+				echo "server=$nameserver" >>/etc/dnsmasq.d/other.conf
+			done
+			make_names_conf "/etc/czdns/other_names.conf" "$OTHER_DNS" /etc/dnsmasq.d/other_names.conf /etc/dnsmasq.d/china.conf
+			make_names_conf "/etc/czdns/china_names.conf" "$CHINA_DNS" /etc/dnsmasq.d/china_names.conf /etc/dnsmasq.d/china.conf
+			;;
+		gfw)
+			for nameserver in $CHINA_DNS; do
+				echo "server=$nameserver" >>/etc/dnsmasq.d/other.conf
+				sed -n -e "s|^\(server.*\)/not_in_gfw$|\1/$nameserver|p" /etc/czdns/gfwlist.conf >>/etc/dnsmasq.d/gfwlist.not.conf
+			done
+			for nameserver in $OTHER_DNS; do
+				sed -n -e "s|^\(server.*\)/in_gfw$|\1/$nameserver|p" /etc/czdns/gfwlist.conf >>/etc/dnsmasq.d/gfwlist.conf
+			done
+			make_names_conf "/etc/czdns/china_names.conf" "$CHINA_DNS" /etc/dnsmasq.d/china_names.conf /etc/dnsmasq.d/gfwlist.conf /etc/dnsmasq.d/gfwlist.not.conf
+			make_names_conf "/etc/czdns/other_names.conf" "$OTHER_DNS" /etc/dnsmasq.d/other_names.conf /etc/dnsmasq.d/gfwlist.conf /etc/dnsmasq.d/gfwlist.not.conf
+			;;
+		*)
+			echo "unknown USE_LIST value: $USE_LIST, expecting chn, gfw" >&2
+			exit 1
+			;;
+	esac
 
-if [ -n "$DNSMASQ_EXTRA_CONF" ]; then
-	echo "$DNSMASQ_EXTRA_CONF" >/etc/dnsmasq.d/99-extra.conf
-fi
+	for nameserver in $CHINA_DNS $OTHER_DNS; do
+		iptables -t filter -A OUTPUT -d $nameserver -p icmp --icmp-type port-unreachable -j DROP
+	done
 
+	if [ -n "$DNSMASQ_EXTRA_CONF" ]; then
+		echo "$DNSMASQ_EXTRA_CONF" >/etc/dnsmasq.d/99-extra.conf
+	fi
+}
+
+make_conf
 # dnsmasq will close till _SC_OPEN_MAX
 ulimit -n 1024
 exec dnsmasq "$@"
