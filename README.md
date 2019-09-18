@@ -17,7 +17,10 @@ Just run
 		-p 2053:53/udp \
 		yousong/czdns
 
-See dnsmasq [FAQ](http://thekelleys.org.uk/dnsmasq/docs/FAQ) for info on capability requirement.
+Or with kubernetes
+
+	# Review and edit k8s/czdns-deploy.yaml
+	kubectl apply -f k8s/czdns-deploy.yaml
 
 # Environment variables
 
