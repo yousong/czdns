@@ -31,6 +31,7 @@ Or with kubernetes
 | `OTHER_DNS`          | `8.8.8.8 1.1.1.1`              | Name servers for resolving dns names from other region                                                             |
 | `CHINA_NAMES`        |                                | Names separated by whitespace chars.  Overrides `USE_LIST` setting and resolve these names with `CHINA_DNS`       |
 | `OTHER_NAMES`        |                                | Names separated by whitespace chars.  Overrides `USE_LIST` setting and resolve these names with `OTHER_DNS`       |
+| `EXCLD_NAMES`        |                                | Regex separated by whitespace chars.  Overrides `USE_LIST` setting and exclude generate confs for these names     |
 | `DNSMASQ_EXTRA_CONF` |                                | Extra conf to be included by dnsmasq                                                                              |
 | `MAKE_CONFD_TAR`     |                                | Pack up files in /etc/dnsmasq.d/ a tar.gz archive                                                                 |
 
@@ -45,6 +46,7 @@ Example settings for `CHINA_NAMES`, `OTHER_NAMES`
 
 	CHINA_NAMES='github.com centos.org'
 	OTHER_NAMES='gist.github.com'
+	EXCLD_NAMES=[^/]*twitter[^/]*
 
 # Links
 
