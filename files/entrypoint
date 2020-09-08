@@ -70,16 +70,16 @@ make_conf() {
 			;;
 	esac
 
-	for nameserver in $CHINA_DNS $OTHER_DNS; do
-		iptables -t filter -A OUTPUT -d $nameserver -p icmp --icmp-type port-unreachable -j DROP
-	done
-
 	if [ -n "$DNSMASQ_EXTRA_CONF" ]; then
 		echo "$DNSMASQ_EXTRA_CONF" >/etc/dnsmasq.d/99-extra.conf
 	fi
 }
 
 make_conf
+
+for nameserver in $CHINA_DNS $OTHER_DNS; do
+	iptables -t filter -A OUTPUT -d $nameserver -p icmp --icmp-type port-unreachable -j DROP
+done
 # dnsmasq will close till _SC_OPEN_MAX
 ulimit -n 1024
 exec dnsmasq "$@"
