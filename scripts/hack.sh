@@ -29,11 +29,13 @@ run() {
 	local dnsmasq_extra_conf="${czdns_dnsmasq_extra_conf:-}"
 	local china_names="${czdns_china_names:-}"
 	local other_names="${czdns_other_names:-}"
+	local make_confd_tar="${czdns_make_confd_tar:-}"
 
 	docker rm --force czdns &>/dev/null || true
 	docker run \
 		--name czdns \
 		--rm \
+		--env MAKE_CONFD_TAR="${czdns_make_confd_tar}" \
 		--env USE_LIST="$use_list" \
 		--env DNSMASQ_EXTRA_CONF="$dnsmasq_extra_conf" \
 		--env CHINA_NAMES="$china_names" \

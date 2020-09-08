@@ -32,6 +32,7 @@ Or with kubernetes
 | `CHINA_NAMES`        |                                | Names separated by whitespace chars.  Overrides `USE_LIST` setting and resolve these names with `CHINA_DNS`       |
 | `OTHER_NAMES`        |                                | Names separated by whitespace chars.  Overrides `USE_LIST` setting and resolve these names with `OTHER_DNS`       |
 | `DNSMASQ_EXTRA_CONF` |                                | Extra conf to be included by dnsmasq                                                                              |
+| `MAKE_CONFD_TAR`     |                                | Pack up files in /etc/dnsmasq.d/ a tar.gz archive                                                                 |
 
 Example value for `DNSMASQ_EXTRA_CONF`
 

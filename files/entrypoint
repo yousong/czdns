@@ -77,9 +77,17 @@ make_conf() {
 
 make_conf
 
-for nameserver in $CHINA_DNS $OTHER_DNS; do
-	iptables -t filter -A OUTPUT -d $nameserver -p icmp --icmp-type port-unreachable -j DROP
-done
-# dnsmasq will close till _SC_OPEN_MAX
-ulimit -n 1024
-exec dnsmasq "$@"
+if [ -z "$MAKE_CONFD_TAR" ]; then
+	for nameserver in $CHINA_DNS $OTHER_DNS; do
+		iptables -t filter -A OUTPUT -d $nameserver -p icmp --icmp-type port-unreachable -j DROP
+	done
+	# dnsmasq will close till _SC_OPEN_MAX
+	ulimit -n 1024
+	exec dnsmasq "$@"
+else
+	cd /etc/dnsmasq.d
+	for f in *; do
+		mv "$f" "czdns-$f"
+	done
+	tar czf - .
+fi
