@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/golang/glog"
@@ -233,7 +234,12 @@ func main() {
 			}
 		}
 	}
+	lines := make([]string, 0, len(serverLines))
 	for s := range serverLines {
+		lines = append(lines, s)
+	}
+	sort.Strings(lines)
+	for _, s := range lines {
 		fmt.Println(s)
 	}
 }
