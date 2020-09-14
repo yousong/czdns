@@ -12,8 +12,8 @@ buildgo() {
 buildprep() {
 	rm -rf "$TOPDIR/files/etc"
 	mkdir -p "$TOPDIR/files/etc/czdns"
-	wget -O "$TOPDIR/files/etc/czdns/china.conf" \
-		https://github.com/felixonmars/dnsmasq-china-list/raw/master/accelerated-domains.china.conf
+	wget -O - https://github.com/felixonmars/dnsmasq-china-list/raw/master/accelerated-domains.china.conf \
+		| grep -v '^#' >"$TOPDIR/files/etc/czdns/china.conf"
 
 	buildgo
 	"$TOPDIR/gfwlist" >"$TOPDIR/files/etc/czdns/gfwlist.conf"
