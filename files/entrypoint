@@ -41,6 +41,15 @@ exclude_names() {
 	fi
 }
 
+sortlines() {
+	local f="$1"; shift
+
+	if [ -s "$f" ]; then
+		sort "$f" > "$f.sorted"
+		mv "$f.sorted" "$f"
+	fi
+}
+
 make_conf() {
 	if [ -f /etc/dnsmasq.d/china.conf -o -f /etc/dnsmasq.d/gfwlist.conf ]; then
 		return
@@ -65,6 +74,10 @@ make_conf() {
 			exclude_names /etc/dnsmasq.d/china.conf
 			make_names_conf "/etc/czdns/other_names.conf" "$OTHER_DNS" /etc/dnsmasq.d/other_names.conf /etc/dnsmasq.d/china.conf
 			make_names_conf "/etc/czdns/china_names.conf" "$CHINA_DNS" /etc/dnsmasq.d/china_names.conf /etc/dnsmasq.d/china.conf
+			sortlines /etc/dnsmasq.d/china.conf
+			sortlines /etc/dnsmasq.d/other.conf
+			sortlines /etc/dnsmasq.d/china_names.conf
+			sortlines /etc/dnsmasq.d/other_names.conf
 			;;
 		gfw)
 			for nameserver in $CHINA_DNS; do
@@ -78,6 +91,11 @@ make_conf() {
 			exclude_names /etc/dnsmasq.d/gfwlist.conf
 			make_names_conf "/etc/czdns/china_names.conf" "$CHINA_DNS" /etc/dnsmasq.d/china_names.conf /etc/dnsmasq.d/gfwlist.conf /etc/dnsmasq.d/gfwlist.not.conf
 			make_names_conf "/etc/czdns/other_names.conf" "$OTHER_DNS" /etc/dnsmasq.d/other_names.conf /etc/dnsmasq.d/gfwlist.conf /etc/dnsmasq.d/gfwlist.not.conf
+			sortlines /etc/dnsmasq.d/gfwlist.conf
+			sortlines /etc/dnsmasq.d/gfwlist.not.conf
+			sortlines /etc/dnsmasq.d/other.conf
+			sortlines /etc/dnsmasq.d/china_names.conf
+			sortlines /etc/dnsmasq.d/other_names.conf
 			;;
 		*)
 			echo "unknown USE_LIST value: $USE_LIST, expecting chn, gfw" >&2
