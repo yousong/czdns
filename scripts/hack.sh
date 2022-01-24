@@ -53,10 +53,16 @@ run() {
 
 }
 
+release_tag() {
+	if test -z "$GITHUB_ACTIONS"; then
+		git tag --force "$VERSION" HEAD
+		git push origin HEAD --tags
+	fi
+}
+
 release() {
 	echo "$VERSION" | grep -qE "^v[0-9]+\.[0-9]+\.[0-9]+$"
-	git tag --force "$VERSION" HEAD
-	git push origin HEAD --tags
+	release_tag
 	buildprep
 	docker buildx build \
 		--platform linux/amd64,linux/386,linux/arm64,linux/arm/v7,linux/arm/v6 \
