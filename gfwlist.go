@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"encoding/base64"
 	"flag"
 	"fmt"
@@ -12,6 +13,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/golang/glog"
 )
@@ -22,7 +24,8 @@ const (
 )
 
 var (
-	gfwlistPath string
+	gfwlistPath    string
+	httpGetTimeout uint
 )
 
 type Empty struct{}
@@ -185,12 +188,20 @@ func main() {
 	flag.Set("stderrthreshold", "0")
 	flag.Set("logtostderr", "true")
 	flag.StringVar(&gfwlistPath, "gfwlist", url_gfwlist, "Path to raw gfwlist.txt")
+	flag.UintVar(&httpGetTimeout, "httpgettimeout", 10, "HTTP GET timeout")
 	flag.Parse()
 
 	var gfwlistReader io.Reader
 	if strings.HasPrefix(gfwlistPath, "http://") ||
 		strings.HasPrefix(gfwlistPath, "https://") {
-		resp, err := http.Get(gfwlistPath)
+		ctx := context.Background()
+		ctx, cancel := context.WithTimeout(ctx, time.Duration(httpGetTimeout)*time.Second)
+		defer cancel()
+		req, err := http.NewRequestWithContext(ctx, "GET", gfwlistPath, nil)
+		if err != nil {
+			glog.Fatal(err)
+		}
+		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
 			glog.Fatal(err)
 		}

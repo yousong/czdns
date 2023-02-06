@@ -5,18 +5,65 @@ set -o pipefail
 
 TOPDIR="$(readlink -f "$(dirname "$0")/..")"
 
+retry() {
+	local i=0
+
+	while true; do
+		if "$@"; then
+			return 0
+		fi
+
+		let i=i+1
+		if test "$i" -eq 3; then
+			echo "retry: failed: $*" >&2
+			return 1
+		fi
+		echo "retry: waiting: $*" >&2
+		sleep 1
+	done
+}
+
 buildgo() {
 	go build -o "$TOPDIR/gfwlist" "$TOPDIR/gfwlist.go"
+}
+
+buildprep_chnconf() {
+	local tmpf
+	tmpf="$(mktemp)"
+
+	if ! wget \
+		--tries 2 \
+		--read-timeout 11 \
+		--connect-timeout 4 \
+		-O "$tmpf" \
+		https://github.com/felixonmars/dnsmasq-china-list/raw/master/accelerated-domains.china.conf; \
+	then
+		rm -f "$tmpf"
+		return 1
+	fi
+	grep -v '^#' "$tmpf" >"$TOPDIR/files/etc/czdns/china.conf"
+	rm -f "$tmpf"
+}
+
+buildprep_gfwlist() {
+	local tmpf
+
+	tmpf="$(mktemp)"
+	if ! "$TOPDIR/gfwlist" -httpgettimeout 30 >"$tmpf"; then
+		rm -f "$tmpf"
+		return 1
+	fi
+	mv "$tmpf" "$TOPDIR/files/etc/czdns/gfwlist.conf"
 }
 
 buildprep() {
 	rm -rf "$TOPDIR/files/etc"
 	mkdir -p "$TOPDIR/files/etc/czdns"
-	wget -O - https://github.com/felixonmars/dnsmasq-china-list/raw/master/accelerated-domains.china.conf \
-		| grep -v '^#' >"$TOPDIR/files/etc/czdns/china.conf"
 
 	buildgo
-	"$TOPDIR/gfwlist" >"$TOPDIR/files/etc/czdns/gfwlist.conf"
+	retry buildprep_gfwlist
+
+	retry buildprep_chnconf
 }
 
 build() {
