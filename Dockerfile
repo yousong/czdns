@@ -1,4 +1,4 @@
-FROM alpine:3.12
+FROM alpine:3.17
 MAINTAINER Yousong Zhou <yszhou4tech@gmail.com>
 
 RUN apk add \
