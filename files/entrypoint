@@ -129,9 +129,32 @@ make_conf() {
 make_conf
 
 if [ -z "$MAKE_CONFD_TAR" ]; then
-	for nameserver in $CHINA_DNS $OTHER_DNS; do
-		iptables -t filter -A OUTPUT -d $nameserver -p icmp --icmp-type port-unreachable -j DROP
-	done
+	if test -f /proc/net/ip_tables_names; then
+		for nameserver in $CHINA_DNS $OTHER_DNS; do
+			iptables -t filter -A OUTPUT -d $nameserver -p icmp --icmp-type port-unreachable -j DROP
+		done
+	else
+		cpl='{'; cpr='}'
+		ip4set=
+		ip6set=
+		for n in $CHINA_DNS $OTHER_DNS; do
+			if test "${n//:/}" = "$n"; then
+				ip4set="$ip4set${ip4set:+,}$n"
+			else
+				ip6set="$ip4set${ip4set:+,}$n"
+			fi
+		done
+		nft flush ruleset
+		nft -f - <<-EOF
+			table inet filter {
+				chain OUTPUT {
+					type filter hook output priority filter; policy accept;
+					${ip4set:+ip  daddr $cpl $ip4set $cpr icmp  type destination-unreachable drop}
+					${ip6set:+ip6 daddr $cpl $ip6set $cpr icmp6 type destination-unreachable drop}
+				}
+			}
+		EOF
+	fi
 	# dnsmasq will close till _SC_OPEN_MAX
 	ulimit -n 1024
 	exec dnsmasq "$@"
