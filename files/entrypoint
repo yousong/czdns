@@ -50,6 +50,20 @@ sortlines() {
 	fi
 }
 
+make_addr6_0() {
+	local from="$1"; shift
+	local to="$1"; shift
+
+	if [ ! -f "$from" ]; then
+		return
+	fi
+
+	cut -d/ -f2 "$from" \
+		| sort -u \
+		| sed -e 's|.*|address=/\0/::|' \
+		>"$to"
+}
+
 make_conf() {
 	if [ -f /etc/dnsmasq.d/china.conf -o -f /etc/dnsmasq.d/gfwlist.conf ]; then
 		return
@@ -96,6 +110,10 @@ make_conf() {
 			sortlines /etc/dnsmasq.d/other.conf
 			sortlines /etc/dnsmasq.d/china_names.conf
 			sortlines /etc/dnsmasq.d/other_names.conf
+			if test -n "$ZERO_ADDR6"; then
+				make_addr6_0 /etc/dnsmasq.d/gfwlist.conf /etc/dnsmasq.d/gfwlist.0addr6.conf
+				make_addr6_0 /etc/dnsmasq.d/other_names.conf /etc/dnsmasq.d/other_names.0addr6.conf
+			fi
 			;;
 		*)
 			echo "unknown USE_LIST value: $USE_LIST, expecting chn, gfw" >&2

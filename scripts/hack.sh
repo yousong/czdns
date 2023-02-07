@@ -76,6 +76,7 @@ run() {
 	local dnsmasq_extra_conf="${czdns_dnsmasq_extra_conf:-}"
 	local china_names="${czdns_china_names:-}"
 	local other_names="${czdns_other_names:-}"
+	local zero_addr6="${czdns_zero_addr6:-}"
 	local make_confd_tar="${czdns_make_confd_tar:-}"
 
 	docker rm --force czdns &>/dev/null || true
@@ -87,6 +88,7 @@ run() {
 		--env DNSMASQ_EXTRA_CONF="$dnsmasq_extra_conf" \
 		--env CHINA_NAMES="$china_names" \
 		--env OTHER_NAMES="$other_names" \
+		--env ZERO_ADDR6="$zero_addr6" \
 		--cap-add NET_ADMIN \
 		-p 2053:53/udp \
 		-p 2053:53/tcp \
