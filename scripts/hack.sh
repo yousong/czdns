@@ -110,8 +110,11 @@ release_tag() {
 }
 
 release() {
-	echo "$VERSION" | grep -qE "^v[0-9]+\.[0-9]+\.[0-9]+$"
-	release_tag
+	if echo "$VERSION" | grep -qE "^v[0-9]+\.[0-9]+\.[0-9]+$"; then
+		release_tag
+	else
+		VERSION="$(date +%Y%m%d)${VERSION:+-$VERSION}"
+	fi
 	buildprep
 	docker buildx build \
 		--platform linux/amd64,linux/386,linux/arm64,linux/arm/v7,linux/arm/v6 \
