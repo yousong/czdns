@@ -6,7 +6,7 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+'
   schedule:
     #        min hour DoM MoY DoW
-    - cron: '0   5    22  *   *'
+    - cron: '37  21   22  *   *'
   workflow_dispatch:
 
 jobs:
