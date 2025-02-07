@@ -10,6 +10,13 @@ on:
   workflow_dispatch:
 
 jobs:
+  keepalive-job:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gautamkrishnar/keepalive-workflow@v2
   build:
     runs-on: ubuntu-latest
     steps:
