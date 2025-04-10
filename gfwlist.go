@@ -129,7 +129,9 @@ func parseLine(line string) (*ABPRule, error) {
 		if err != nil {
 			return nil, err
 		}
-		rule.isException = true
+		if rule != nil {
+			rule.isException = true
+		}
 		return rule, nil
 	}
 
