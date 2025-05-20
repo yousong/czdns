@@ -6,17 +6,17 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+'
   schedule:
     #        min hour DoM MoY DoW
-    - cron: '23  13   10  *   *'
+    - cron: '23  08   20  *   *'
   workflow_dispatch:
 
 jobs:
   keepalive-job:
+    if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
     permissions:
       actions: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: gautamkrishnar/keepalive-workflow@v2
+      - uses: liskin/gh-workflow-keepalive@v1
   build:
     runs-on: ubuntu-latest
     steps:
